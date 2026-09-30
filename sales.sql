@@ -1,6 +1,3 @@
--- "sales" is used interchangeably with "orders" in the question set.
--- If your DB doesn't support CREATE TABLE AS SELECT, this file
--- creates it manually with the same data as orders.sql.
 
 CREATE TABLE sales (
     sale_id INT PRIMARY KEY,
@@ -22,3 +19,4 @@ INSERT INTO sales VALUES
 (1008, 201, 105, '2026-07-01', 2499.00, 1),
 (1009, 202, 101, '2026-08-01', 799.00,  1),
 (1010, 203, 103, '2026-09-05', 499.00,  1);
+

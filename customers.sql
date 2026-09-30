@@ -12,4 +12,15 @@ INSERT INTO customers VALUES
 (203, 'John Smith',   'USA',   'East',  '2024-02-20'),
 (204, 'Emma Watson',  'UK',    'South', '2024-05-05'),
 (205, 'Arjun Nair',   'India', 'South', '2024-06-01'),
-(206, 'Lena Fischer', 'Germany','North', '2025-01-01'); -- never ordered
+(206, 'Lena Fischer', 'Germany','North', '2025-01-01'); 
+
+-- Find customers who have not made any purchase
+select  name,  order_id
+from customers left join orders
+on customers.customer_id = orders.customer_id
+where order_id is null;
+
+-- Write a query to get the first and last purchase date for each customer.
+select customer_id,min(registration_date) as first_purchase,
+max(registration_date) as last_purchase 
+from customers group by customer_id;

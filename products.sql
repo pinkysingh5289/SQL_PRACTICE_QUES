@@ -16,3 +16,9 @@ INSERT INTO products VALUES
 (106, 'Novel - Fiction',  4,  349.00, '2024-06-10', FALSE),
 (107, 'Old Keyboard',     1,  599.00, '2020-01-01', TRUE),  -- discontinued
 (108, 'Unsold Gadget',    1,  999.00, '2025-01-01', FALSE); -- never ordered
+
+-- Find products that have never been sold.
+select p.product_id,p.product_name, s.customer_id from products p
+left join sales s on 
+p.product_id = s.product_id
+where s.customer_id is null;
