@@ -21,3 +21,7 @@ INSERT INTO orders VALUES
 (1008, 201, 105, '2026-07-01', 2499.00, 1,   0.00, 'UPI',         'Online'),
 (1009, 202, 101, '2026-08-01', 799.00,  1,   0.00, 'Credit Card', 'In-Store'),
 (1010, 203, 103, '2026-09-05', 499.00,  1,   0.00, 'UPI',         'Online');
+
+-- Find customers with orders totaling more than $10,000 
+select customer_id,sum(amount) from orders 
+group by customer_id having sum(amount)>2000;

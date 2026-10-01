@@ -55,3 +55,38 @@ select d.department_name,d.department_id,count(e.id) from departments d
 left join employees e on
 d.department_id = e.department_id
 group by department_id ;
+
+-- Retrieve the Nth highest salary from the employees table
+-- SELECT DISTINCT salary
+-- FROM employees
+-- ORDER BY salary DESC
+-- LIMIT 1 OFFSET N-1;
+-- (Replace N with the desired rank, e.g., N=3 for third highest)
+
+-- Show the department with the highest number of employees and the count.
+SELECT department_id, COUNT(*) AS
+employee_count
+FROM employees
+GROUP BY department_id
+ORDER BY employee_count DESC
+LIMIT 1;
+
+-- List employees with their manager names (LEFT JOIN)
+SELECT e.name AS employee, m.name AS manager
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.id;
+
+-- Employees with no manager assigned
+select * from employees where manager_id is null;
+
+-- Second highest salary (company-wide)
+select max(salary) as second_highest_salary from employees where salary <
+(select max(salary ) from employees);
+
+-- Write a query to rank employees based on salary
+select name,salary ,rank() over(order by salary desc) as salary_rank
+from employees;
+
+-- Write a query to calculate the difference between current row and previous row's salary (lag function)
+select name,salary,salary - lag(salary) over(order by salary desc) as diff  
+from employees ;
