@@ -90,3 +90,71 @@ from employees;
 -- Write a query to calculate the difference between current row and previous row's salary (lag function)
 select name,salary,salary - lag(salary) over(order by salary desc) as diff  
 from employees ;
+
+-- Find departments with the highest average salary.
+with avg_sal as (
+select department_id,avg(salary) as avg_salary 
+from employees group by department_id )
+select department_id,avg_salary
+from avg_sal where avg_salary = (select max(avg_salary) from avg_sal);
+
+-- Rank employees by salary within their department, and calculate percent rank.
+select name,department_id ,rank() over(partition by department_id
+order by salary desc) as salary_rank,
+percent_rank() over(partition by department_id order by salary desc)
+as percent_salary_rank  from employees;
+
+-- Top 5 highest-paid employees per department
+select * from (
+select e.* ,row_number() over(partition by department_id
+order by salary desc) as rn from employees e )  sub
+where rn <= 5;
+
+-- Find the median salary of employees.
+SELECT AVG(salary) AS median_salary
+FROM (
+    SELECT salary
+    FROM employees
+    ORDER BY salary
+    LIMIT 2 - (SELECT COUNT(*) FROM employees) % 2 
+    -- This error happens because MySQL's LIMIT and OFFSET don't accept
+    -- arithmetic expressions with subqueries directly
+    OFFSET (SELECT (COUNT(*) - 1) / 2 FROM employees)
+) AS median_subquery; 
+
+-- 2nd way of Find the median salary of employees.
+SET @row_count = (SELECT COUNT(*) FROM employees);
+SET @offset_val = (@row_count - 1) DIV 2;
+SET @limit_val = 2 - (@row_count % 2);
+
+SET @sql = CONCAT(
+    'SELECT AVG(salary) AS median_salary FROM (
+        SELECT salary FROM employees ORDER BY salary
+        LIMIT ', @limit_val, ' OFFSET ', @offset_val, '
+    ) AS median_subquery'
+);
+
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- Find employees with salaries higher than their department average
+with avg_sal as(
+select department_id,avg(salary) as avg_salary from employees group by department_id)
+select  e.name,e.department_id , a.avg_salary from employees e
+join avg_sal a on 
+e.department_id = a.department_id
+where  e.salary > a.avg_salary ;
+
+-- Find the employee with the maximum salary in each department.
+with max_sal as (
+select department_id,max(salary) as max_salary from employees group by department_id)
+select e.name,e.department_id,m.max_salary from employees e
+join max_sal m on
+e.department_id = m.department_id and
+e.salary = m.max_salary;
+
+-- Find the rank of employees based on salary within their department.
+select department_id,name,salary,rank() 
+over(partition by department_id order by salary desc )
+as salary_rank from employees;

@@ -20,3 +20,7 @@ INSERT INTO sales VALUES
 (1009, 202, 101, '2026-08-01', 799.00,  1),
 (1010, 203, 103, '2026-09-05', 499.00,  1);
 
+-- Rank customers by total revenue
+select sum(amount) as total ,customer_id , rank() over(partition by customer_id
+order by sum(amount) desc ) as revenue_rank from sales
+group by customer_id;

@@ -31,3 +31,4 @@ left join sales  s on
 c.customer_id = s.customer_id
 where s.sale_id is null ;
 
+-- Rank customers by total revenue
