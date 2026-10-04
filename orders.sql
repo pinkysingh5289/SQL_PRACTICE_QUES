@@ -25,3 +25,16 @@ INSERT INTO orders VALUES
 -- Find customers with orders totaling more than $10,000 
 select customer_id,sum(amount) from orders 
 group by customer_id having sum(amount)>2000;
+
+-- Customers who spent more than the average customer
+WITH customer_totals AS (
+    SELECT customer_id, SUM(amount) AS total_spent
+    FROM orders
+    GROUP BY customer_id
+)SELECT AVG(total_spent) FROM customer_totals
+WHERE total_spent > (SELECT AVG(total_spent) FROM customer_totals);
+
+-- Products never ordered, with category name
+SELECT p.product_id,p.product_name from products  p
+left join orders o on p.product_id = o.product_id
+where o.product_id is null;

@@ -158,3 +158,22 @@ e.salary = m.max_salary;
 select department_id,name,salary,rank() 
 over(partition by department_id order by salary desc )
 as salary_rank from employees;
+
+-- . Salary gap in each department
+	with salary_s as (
+	select   department_id, max(salary) as max_salary ,
+	min(salary) as min_salary from employees 
+	group by department_id  )
+	select department_id, max_salary,
+	min_salary, max_salary -  min_salary as salary_gap from 
+	salary_s;
+
+-- Employees earning above their job title's average
+	 with salary_s as ( 
+	 select department_id,job_title,salary,name,avg(salary) over(partition by 
+	job_title) as avg_sal from employees )
+	 select department_id,job_title,name,salary,avg_sal from salary_s 
+	 where salary > avg_sal;
+ 
+ 
+ 
