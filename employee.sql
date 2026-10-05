@@ -174,6 +174,16 @@ as salary_rank from employees;
 	job_title) as avg_sal from employees )
 	 select department_id,job_title,name,salary,avg_sal from salary_s 
 	 where salary > avg_sal;
- 
+
+-- Second highest paid employee per department
+WITH ranked AS (
+    SELECT department_id, name, salary,
+           DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rnk
+    FROM employees
+)
+SELECT department_id, name, salary
+FROM ranked
+WHERE rnk = 2;
+
  
  
